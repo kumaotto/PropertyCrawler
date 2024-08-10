@@ -1,1 +1,4 @@
 scrapy==2.11.2
+slack_sdk==3.31.0
+gspread==6.1.2
+oauth2client==4.1.3
