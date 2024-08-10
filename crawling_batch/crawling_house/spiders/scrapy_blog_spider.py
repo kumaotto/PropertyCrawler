@@ -17,7 +17,7 @@ class ScrapyBlogSpiderSpider(scrapy.Spider):
             yield Post(
                 url=response.urljoin(detail_url) if detail_url else None,
                 title=post.css('.cassetteitem_content-title::text').get().strip(),
-                image_url=post.css('img.js-noContextMenu.js-linkImage.js-adjustImg::attr(src)').get(),
+                image_url=post.css('img.js-noContextMenu.js-linkImage.js-adjustImg::attr(rel)').get(),
                 rent=post.css('span.cassetteitem_other-emphasis.ui-text--bold::text').get(),
                 management_fee=post.css('span.cassetteitem_price.cassetteitem_price--administration::text').get(),
                 security_deposit=post.css('span.cassetteitem_price.cassetteitem_price--deposit::text').get(),
