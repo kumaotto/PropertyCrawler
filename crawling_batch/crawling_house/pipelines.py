@@ -50,7 +50,7 @@ class GoogleSpreadsheetPipeline:
         self.client = gspread.authorize(creds)
 
         try:
-            sheet_name = os.getenv('TARGET_SLACK_CHANNEL')
+            sheet_name = os.getenv('TARGET_SHEET_NAME')
             self.sheet = self.client.open(sheet_name).sheet1
 
         except gspread.exceptions.SpreadsheetNotFound:
