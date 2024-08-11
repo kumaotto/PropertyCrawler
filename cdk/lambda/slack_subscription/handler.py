@@ -14,7 +14,7 @@ client = WebClient(token=slack_token)
 sheet_client = setup_google_sheets_client()
 
 SPREADSHEET_ID = os.environ['SPREADSHEET_ID']
-SHEET_NAME = '2LDK(1)'
+SHEET_NAME = 'crawling'
 
 logger = Logger()
 

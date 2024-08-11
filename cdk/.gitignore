@@ -12,3 +12,4 @@ cdk.out
 # for Lambda
 __pycache__
 lambda/layer/modules_layer/python/*
+lambda/layer/scrapy_layer/python/*
