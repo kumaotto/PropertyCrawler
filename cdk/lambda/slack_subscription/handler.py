@@ -3,39 +3,54 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import os
 
-# Slack APIクライアントの初期化
 slack_token = os.environ['SLACK_BOT_TOKEN']
 client = WebClient(token=slack_token)
 
 
 def lambda_handler(event, context):
+
     try:
-        # Slackのイベントデータを取得
-        reaction_event = json.loads(event['body'])['event']
+        body = json.loads(event['body'])
+        print('body:', body)
 
-        if reaction_event['reaction'] == '+1':
-            channel_id = reaction_event['item']['channel']
-            timestamp = reaction_event['item']['ts']
-            user_id = reaction_event['user']
-            print('channel_id:', channel_id)
-            print('stamp:', timestamp)
-            print('user_id:', user_id)
-
-            # メッセージをピンに追加
-            try:
-                _ = client.pins_add(
-                    channel=channel_id,
-                    timestamp=timestamp
-                )
-                print(f"Message pinned successfully in channel {channel_id}.")
-
-            except SlackApiError as e:
-                print(f"Error pinning message: {e.response['error']}")
-
+        # slackのチャレンジリクエスト用
+        if 'challenge' in body:
             return {
                 'statusCode': 200,
-                'body': json.dumps('Reaction processed successfully')
+                'body': body['challenge']
             }
+
+        if 'event' in body:
+            event_data = body['event']
+
+            # 👍リアクションが追加された場合は、ピン留めする
+            if event_data['reaction'] == '+1' and event_data['type'] == 'reaction_added':
+
+                channel_id = event_data['item']['channel']
+                timestamp = event_data['item']['ts']
+
+                try:
+                    _ = client.pins_add(
+                        channel=channel_id,
+                        timestamp=timestamp
+                    )
+
+                except SlackApiError as e:
+                    print(f"Error pinning message: {e.response['error']}")
+
+            # 👍リアクションが削除された場合は、ピン留めから削除する
+            if event_data['reaction'] == '+1' and event_data['type'] == 'reaction_removed':
+                channel_id = event_data['item']['channel']
+                timestamp = event_data['item']['ts']
+
+                try:
+                    _ = client.pins_remove(
+                        channel=channel_id,
+                        timestamp=timestamp
+                    )
+
+                except SlackApiError as e:
+                    print(f"Error pinning message: {e.response['error']}")
 
     except Exception as e:
         print(f"Error processing event: {e}")
