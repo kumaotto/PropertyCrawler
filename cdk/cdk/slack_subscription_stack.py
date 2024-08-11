@@ -21,11 +21,21 @@ class SlackSubscriptionStack(Stack):
         """
         Lambda
         """
+        slack_layer = _lambda.LayerVersion(
+            self, "SlackLayer",
+            code=_lambda.Code.from_asset("./lambda/layer/slack_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
+            description="A layer that contains the Slack client."
+        )
+
         slack_lambda = _lambda.Function(
             self, "SlackHandler",
             runtime=_lambda.Runtime.PYTHON_3_12,
-            handler="handler.handler",  # 既存のlambda_function.pyを使用
+            handler="handler.lambda_handler",
             code=_lambda.Code.from_asset("./lambda/slack_subscription"),
+            layers=[
+                slack_layer
+            ],
             environment={
                 'SLACK_BOT_TOKEN': slack_token.string_value
             }
