@@ -2,5 +2,8 @@
     "flake8.args": [
         "--max-line-length",
         "150"
+    ],
+    "python.analysis.extraPaths": [
+        "./cdk/lambda/layer/common_layer/python"
     ]
 }
