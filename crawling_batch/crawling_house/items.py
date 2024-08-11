@@ -2,6 +2,7 @@ import scrapy
 
 
 class Post(scrapy.Item):
+    date = scrapy.Field()
     url = scrapy.Field()
     title = scrapy.Field()
     image_url = scrapy.Field()
