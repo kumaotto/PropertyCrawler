@@ -1,9 +1,11 @@
+from datetime import datetime
 import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
+from scrapy.exceptions import DropItem
 
 # .envファイルを読み込む
 load_dotenv()
@@ -12,12 +14,16 @@ load_dotenv()
 class SlackPipeline:
 
     def __init__(self):
-        token = os.getenv('SLACK_BOT_TOKEN')
-        if not token:
-            raise ValueError("SLACK_BOT_ACCESS_TOKEN environment variable not set")
-        self.client = WebClient(token=token)
+        self.client = WebClient(token=os.getenv('SLACK_BOT_TOKEN'))
+        self.posted_urls = set()
 
     def process_item(self, item, spider):
+
+        # 重複アイテムは処理をスキップ
+        if item['url'] in self.posted_urls:
+            spider.logger.info(f"Duplicate item skipped for Slack: {item['url']}")
+            return item
+
         message = (
             f"*{item.get('title', 'N/A')}*\n"
             f"*最寄り駅:* {item.get('station', 'N/A')}\n"
@@ -36,6 +42,8 @@ class SlackPipeline:
                 channel=os.getenv('TARGET_SLACK_CHANNEL'),
                 text=message
             )
+            self.posted_urls.add(item['url'])
+
         except SlackApiError as e:
             spider.logger.error(f"Error posting to Slack: {e.response['error']}")
 
@@ -53,24 +61,39 @@ class GoogleSpreadsheetPipeline:
             sheet_name = os.getenv('TARGET_SHEET_NAME')
             self.sheet = self.client.open(sheet_name).sheet1
 
+            # スプレッドシートからすでに存在するURLを読み込む
+            existing_data = self.sheet.get_all_values()
+            self.existing_urls = {row[0] for row in existing_data if row}
+
         except gspread.exceptions.SpreadsheetNotFound:
             spider.logger.error("Spreadsheet not found. Please check the name and sharing settings.")
             raise
 
     def process_item(self, item, spider):
-        self.sheet.append_row([
-            item.get('url', 'URL'),
-            item.get('title', 'タイトル'),
-            item.get('image_url', '画像'),
-            item.get('rent', '家賃'),
-            item.get('management_fee', '管理費'),
-            item.get('security_deposit', '敷金'),
-            item.get('reikin', '礼金'),
-            item.get('age', '築年数'),
-            item.get('address', '住所'),
-            item.get('station', '最寄り'),
-            item.get('floor', '階数'),
-            item.get('all_floor', '建物全体の階数'),
-            item.get('area', '面積')
-        ])
-        return item
+
+        # 重複チェック
+        if item['url'] in self.existing_urls:
+            raise DropItem(f"Duplicate item found: {item['url']}")
+
+        else:
+            # URLリストを更新
+            self.existing_urls.add(item['url'])
+
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.sheet.append_row([
+                now,
+                item.get('url', 'URL'),
+                item.get('title', 'タイトル'),
+                item.get('image_url', '画像'),
+                item.get('rent', '家賃'),
+                item.get('management_fee', '管理費'),
+                item.get('security_deposit', '敷金'),
+                item.get('reikin', '礼金'),
+                item.get('age', '築年数'),
+                item.get('address', '住所'),
+                item.get('station', '最寄り'),
+                item.get('floor', '階数'),
+                item.get('all_floor', '建物全体の階数'),
+                item.get('area', '面積')
+            ])
+            return item
