@@ -4,6 +4,10 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_ssm as ssm,
     aws_iam as iam,
+    aws_dynamodb as dynamodb,
+    aws_events as events,
+    aws_events_targets as targets,
+    RemovalPolicy,
 )
 from constructs import Construct
 
@@ -13,46 +17,71 @@ class CrawlingBatchStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        """
+        DynamoDB
+        """
+        table = dynamodb.Table(
+            self, 'CrawlingPropertyCache',
+            partition_key={'name': 'PropertyID', 'type': dynamodb.AttributeType.STRING},
+            removal_policy=RemovalPolicy.DESTROY
+        )
+
         '''
         Lambda
         '''
         # Lambda Layer
-        scrapy_layer = _lambda.LayerVersion(
-            self, 'ScrapyModuleLayer',
-            code=_lambda.Code.from_asset('./lambda/layer/scrapy_layer'),
+        crawling_layer = _lambda.LayerVersion(
+            self, 'CrawlingModuleLayer',
+            code=_lambda.Code.from_asset('./lambda/layer/crawling_layer'),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
-            description='Scrapy Module Layer'
-        )
-
-        c_packages_layer = _lambda.LayerVersion.from_layer_version_arn(
-            self, 'CPackagesLayer',
-            layer_version_arn='arn:aws:lambda:ap-northeast-1:024668304519:layer:c_packages:1'
+            description='Crawling Module Layer'
         )
 
         # Parameter Storeから各種パラメータ取得
-        slack_token = ssm.StringParameter.from_string_parameter_attributes(
-            self, 'SlackToken',
-            parameter_name='/crawling-houses/slack/token'
+        slack_webhook_url = ssm.StringParameter.from_string_parameter_attributes(
+            self, 'SlackWebhookURL',
+            parameter_name='/crawling-houses/slack/webhook/url'
+        )
+        spreadsheet_id = ssm.StringParameter.from_string_parameter_attributes(
+            self, 'SpreadsheetID',
+            parameter_name='/crawling-houses/spreadsheet/id'
         )
 
-        scrapy_lambda = _lambda.Function(
-            self, 'ScrapyHandler',
+        crawling_lambda = _lambda.Function(
+            self, 'CrawlingHandler',
             runtime=_lambda.Runtime.PYTHON_3_12,
             handler='handler.lambda_handler',
             code=_lambda.Code.from_asset('./lambda/crawling_batch'),
             timeout=Duration.seconds(200),
             layers=[
-                scrapy_layer,
-                c_packages_layer
+                crawling_layer
             ],
             environment={
-                'SLACK_BOT_TOKEN': slack_token.string_value,
+                'SLACK_WEBHOOK_URL': slack_webhook_url.string_value,
+                'SPREADSHEET_ID': spreadsheet_id.string_value,
                 'TARGET_SLACK_CHANNEL': '#crawler-property',
-                'TARGET_SHEET_NAME': 'Crawler Property Results'
+                'TARGET_SHEET_NAME': 'Crawler Property Results',
+                'DYNAMODB_TABLE_NAME': table.table_name,
             }
         )
 
-        scrapy_lambda.add_to_role_policy(
+        '''
+        EventBridge Rule
+        '''
+        rule = events.Rule(
+            self, 'DailyCrawlingRule',
+            schedule=events.Schedule.cron(minute='0', hour='9,21')  # 午前9時と午後9時に実行
+        )
+
+        # EventBridgeルールにLambdaをターゲットとして設定
+        rule.add_target(targets.LambdaFunction(crawling_lambda))
+
+        """
+        Permissions
+        """
+        table.grant_read_write_data(crawling_lambda)
+
+        crawling_lambda.add_to_role_policy(
             iam.PolicyStatement(
                 actions=['ssm:GetParameter'],
                 resources=[
