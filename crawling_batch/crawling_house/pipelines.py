@@ -63,7 +63,7 @@ class GoogleSpreadsheetPipeline:
 
             # スプレッドシートからすでに存在するURLを読み込む
             existing_data = self.sheet.get_all_values()
-            self.existing_urls = {row[0] for row in existing_data if row}
+            self.existing_urls = {row[1] for row in existing_data if row}
 
         except gspread.exceptions.SpreadsheetNotFound:
             spider.logger.error("Spreadsheet not found. Please check the name and sharing settings.")
