@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 def scrape_properties():
-    url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=09&po2=99&ta=13&md=07&md=08&md=09&md=10&ts=1&cb=0.0&ct=15.5&et=10&mb=0&mt=9999999&cn=20&ekInput=84580&ekInput=26650&nk=-1&nk=-1&tj=80&tj=80&co=1&kz=1&tc=0401303&tc=0400101&tc=0400301&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03'
+    url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=09&po2=99&ta=13&md=07&md=08&md=09&md=10&ts=1&ts=3&cb=0.0&ct=15.0&et=10&mb=0&mt=9999999&cn=20&ekInput=84580&ekInput=26650&nk=-1&nk=-1&tj=80&tj=80&co=1&kz=1&tc=0401303&tc=0400103&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
