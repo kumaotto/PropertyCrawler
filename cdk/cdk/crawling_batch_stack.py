@@ -36,6 +36,12 @@ class CrawlingBatchStack(Stack):
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
             description='Crawling Module Layer'
         )
+        common_layer = _lambda.LayerVersion(
+            self, 'SlackCommonLayer',
+            code=_lambda.Code.from_asset('./lambda/layer/common_layer'),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
+            description='A layer that contains the common functions.'
+        )
 
         # Parameter Storeから各種パラメータ取得
         slack_webhook_url = ssm.StringParameter.from_string_parameter_attributes(
@@ -54,7 +60,8 @@ class CrawlingBatchStack(Stack):
             code=_lambda.Code.from_asset('./lambda/crawling_batch'),
             timeout=Duration.seconds(200),
             layers=[
-                crawling_layer
+                crawling_layer,
+                common_layer
             ],
             environment={
                 'SLACK_WEBHOOK_URL': slack_webhook_url.string_value,

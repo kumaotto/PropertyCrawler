@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from googleapiclient.discovery import build
 from google.oauth2.service_account import Credentials
 import os
@@ -9,8 +8,8 @@ from ssm import get_credentials_from_parameter_store
 
 def send_to_sheets(properties):
     # Google Sheets APIの認証
-    creds_dict = json.loads(get_credentials_from_parameter_store())
-    credentials = Credentials.from_service_account_file(creds_dict)
+    creds_dict = get_credentials_from_parameter_store()
+    credentials = Credentials.from_service_account_info(creds_dict)
     service = build('sheets', 'v4', credentials=credentials)
     sheet = service.spreadsheets()
     spreadsheet_id = os.getenv('SPREADSHEET_ID')

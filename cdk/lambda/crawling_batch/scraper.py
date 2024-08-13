@@ -1,20 +1,22 @@
+from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
 
 def scrape_properties():
-    url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&ta=13&cb=0.0&ct=15.0&mb=0&mt=9999999&md=07&md=08&md=09&md=10&ts=1&ts=3&et=10&cn=20&kz=1&tc=0400103&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03&ekInput=20110&nk=-1&tj=50&sngz=&po1=09'
+    url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=09&po2=99&ta=13&md=07&md=08&md=09&md=10&ts=1&cb=0.0&ct=15.5&et=10&mb=0&mt=9999999&cn=20&ekInput=84580&ekInput=26650&nk=-1&nk=-1&tj=80&tj=80&co=1&kz=1&tc=0401303&tc=0400101&tc=0400301&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     properties = []
     for post in soup.select('.cassetteitem'):
         detail_url = post.select_one('a.js-cassette_link_href')['href']
+        full_url = urljoin(url, detail_url) if detail_url else None
 
         properties.append({
-            'url': response.urljoin(detail_url) if detail_url else None,
+            'url': full_url,
             'title': post.select_one('.cassetteitem_content-title').get_text(strip=True),
-            'image_url': post.select_one('img.js-noContextMenu.js-linkImage.js-adjustImg')['rel'],
+            'image_url': post.select_one('.casssetteitem_other-thumbnail-img.casssetteitem_other-thumbnail-img--hasimages.js-view_gallery-modal')['rel'],
             'rent': post.select_one('span.cassetteitem_other-emphasis.ui-text--bold').get_text(strip=True),
             'management_fee': post.select_one('span.cassetteitem_price.cassetteitem_price--administration').get_text(strip=True),
             'security_deposit': post.select_one('span.cassetteitem_price.cassetteitem_price--deposit').get_text(strip=True),
@@ -31,16 +33,16 @@ def scrape_properties():
 
 # def scrape_properties(url):
 #     properties = []
-
 #     while url:
 #         response = requests.get(url)
 #         soup = BeautifulSoup(response.text, 'html.parser')
 
 #         for post in soup.select('.cassetteitem'):
 #             detail_url = post.select_one('a.js-cassette_link_href')['href']
+#             full_url = urljoin(url, detail_url) if detail_url else None
 
 #             properties.append({
-#                 'url': response.urljoin(detail_url) if detail_url else None,
+#                 'url': full_url,
 #                 'title': post.select_one('.cassetteitem_content-title').get_text(strip=True),
 #                 'image_url': post.select_one('img.js-noContextMenu.js-linkImage.js-adjustImg')['rel'],
 #                 'rent': post.select_one('span.cassetteitem_other-emphasis.ui-text--bold').get_text(strip=True),
@@ -75,5 +77,5 @@ def scrape_properties():
 
 
 # # 最初のページのURLを渡してスクレイピングを開始
-# initial_url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&ta=13&cb=0.0&ct=15.0&mb=0&mt=9999999&md=07&md=08&md=09&md=10&ts=1&ts=3&et=10&cn=20&kz=1&tc=0400103&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03&ekInput=20110&nk=-1&tj=50&sngz=&po1=09'
+# initial_url = 'https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=09&po2=99&ta=13&md=07&md=08&md=09&md=10&ts=1&cb=0.0&ct=15.5&et=10&mb=0&mt=9999999&cn=20&ekInput=84580&ekInput=26650&nk=-1&nk=-1&tj=80&tj=80&co=1&kz=1&tc=0401303&tc=0400101&tc=0400301&tc=0400901&shkr1=03&shkr2=03&shkr3=03&shkr4=03'
 # all_properties = scrape_properties(initial_url)
