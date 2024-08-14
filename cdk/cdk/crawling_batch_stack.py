@@ -77,7 +77,7 @@ class CrawlingBatchStack(Stack):
         '''
         rule = events.Rule(
             self, 'DailyCrawlingRule',
-            schedule=events.Schedule.cron(minute='0', hour='9')  # 午前9時と午後9時に実行
+            schedule=events.Schedule.cron(minute='0', hour='0')  # 時間はUTC
         )
 
         # EventBridgeルールにLambdaをターゲットとして設定
