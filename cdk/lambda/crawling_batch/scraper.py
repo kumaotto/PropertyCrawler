@@ -16,7 +16,7 @@ def scrape_properties(url):
             properties.append({
                 'url': full_url,
                 'title': post.select_one('.cassetteitem_content-title').get_text(strip=True),
-                'image_url': post.select_one('img.js-noContextMenu.js-linkImage.js-adjustImg')['rel'],
+                'image_url': post.select_one('.casssetteitem_other-thumbnail-img.casssetteitem_other-thumbnail-img--hasimages.js-view_gallery-modal')['rel'],
                 'rent': post.select_one('span.cassetteitem_other-emphasis.ui-text--bold').get_text(strip=True),
                 'management_fee': post.select_one('span.cassetteitem_price.cassetteitem_price--administration').get_text(strip=True),
                 'security_deposit': post.select_one('span.cassetteitem_price.cassetteitem_price--deposit').get_text(strip=True),
