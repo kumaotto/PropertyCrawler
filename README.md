@@ -17,6 +17,8 @@ cd cdk/
 cdk deploy --all
 ```
 
+デプロイ完了後、 `process4` を実施し設定を完了してください。
+
 ## 全て削除する場合
 
 ```shell
