@@ -35,7 +35,7 @@
 ![Slack API](docs/slack-api-top.png)
 2. OAuth & Permissionsページ: 左側のメニューから「OAuth & Permissions」を選択します。
 ![OAuth & Permissions](docs/oauth-permissions.png)
-3. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。:
+3. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。
 - chat:write (メッセージの投稿)
 - channels:read (チャンネル情報の読み取り)
 - channels:history
@@ -45,6 +45,8 @@
 - incoming-webhook
 - pins:write
 - reactions:read
+
 ![scope](docs/scopes.png)
+
 4. OAuthトークンの再生成: スコープを追加した後、「OAuth Tokens for Your Workspace」セクションで「Reinstall App」ボタンをクリックして新しいトークンを生成します。
 ![oauth-token](docs/oauth-tokens.png)
