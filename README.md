@@ -46,7 +46,5 @@
 - pins:write
 - reactions:read
 
-![scope](docs/scopes.png)
-
 4. OAuthトークンの再生成: スコープを追加した後、「OAuth Tokens for Your Workspace」セクションで「Reinstall App」ボタンをクリックして新しいトークンを生成します。
 ![oauth-token](docs/oauth-tokens.png)
