@@ -1,39 +1,50 @@
-# SUUMO crawler and notify someone
+# SUUMO Crawler And Notify Tool
 
-## Overview
+## 概要
 
-- Enable the noticing of new candidate houses
-- Notify the person you’re considering living with to facilitate a smooth decision-making process
+- 新しい候補の家を通知する
+- 一緒に住むことを検討している人に通知して、スムーズな意思決定を促進する
 
-## Features
+## 特徴
 
-- Notify new house adjust your condition
-- Notify when someone reacts to new bot message
-    - If your future cohabitant reacts to the messages, you'll receive a notification.
-- List your favorite house
-    - If you react with a specific icon, the bot will pin the message.
-    - And the reacted properties will be listed in a spreadsheet for easier management. (Also remove unreacted properties)
+- 条件に合った新しい家を通知
+- 新しいボットメッセージに誰かが反応したときに通知
+    - 将来の同居人がメッセージに反応した場合、通知を受け取ります。
+- お気に入りの家をリストアップ
+    - 特定のアイコンで反応すると、ボットがメッセージをピン留めします。
+    - 反応した物件はスプレッドシートにリストアップされ、管理が容易になります。（反応しなかった物件は削除されます）
 
-## Usage
-### Enabling the Functionality for Writing to a Spreadsheet
+## 使用方法
+### スプレッドシートへの書き込み機能を有効にする
 
-To enable the functionality for writing to a spreadsheet, follow these steps to create `credentials.json` (make sure to rename it to `credentials.json`). Place the created `credentials.json` in the root of your project.  
-[Google Sheets API Quickstart for Python](https://developers.google.com/sheets/api/quickstart/python?hl=en)
+スプレッドシートへの書き込み機能を有効にするには、以下の手順に従って`credentials.json`を作成します（必ず`credentials.json`にリネームしてください）。作成した`credentials.json`をプロジェクトのルートに配置します。  
+[Google Sheets API Quickstart for Python](https://developers.google.com/sheets/api/quickstart/python?hl=ja)
 
-### How to Post a Message to Slack
+### Slackにメッセージを投稿する方法
 
-1. **Copy `.env.example`:**
+1. **`.env.example`をコピーする:**
 ```shell
    cp .env.example .env
 ```
 
-1. **Create a token on Slack and fill out the `.env` file**
+2. **Slackでトークンを作成し、`.env` ファイルに記入する**
 
-Steps:
+手順:
 
-1. Log in to Slack API: Go to the Slack API page and select your app.
-2. OAuth & Permissions Page: From the left-hand menu, select "OAuth & Permissions."
-3. Bot Token Scopes: Go to the "Bot Token Scopes" section and add the scopes required by your app. For example, to post messages, you need the following scopes:
-- chat:write (Posting messages)
-- channels:read (Reading channel information)
-4. Regenerate OAuth Token: After adding the scopes, click the "Reinstall App" button in the "OAuth Tokens for Your Workspace" section to generate a new token.
+1. Slack APIにログイン: [Slack API](https://api.slack.com/)にアクセスし、アプリを選択します。
+![Slack API](docs/slack-api-top.png)
+2. OAuth & Permissionsページ: 左側のメニューから「OAuth & Permissions」を選択します。
+![OAuth & Permissions](docs/oauth-permissions.png)
+3. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。:
+- chat:write (メッセージの投稿)
+- channels:read (チャンネル情報の読み取り)
+- channels:history
+- groups:history
+- im:history
+- mpim:history
+- incoming-webhook
+- pins:write
+- reactions:read
+![scope](docs/scopes.png)
+4. OAuthトークンの再生成: スコープを追加した後、「OAuth Tokens for Your Workspace」セクションで「Reinstall App」ボタンをクリックして新しいトークンを生成します。
+![oauth-token](docs/oauth-tokens.png)
