@@ -9,6 +9,9 @@
 
 ## 使用方法
 
+このプロジェクトはDevContainerを使用しています。
+VSCodeの拡張機能にDevContainerを入れ、docker上で起動すると、cdkをローカルに入れる必要もなく楽です。
+
 docs配下に格納されている `process1` 〜 `process3` までをご参照ください。
 全て完了したら、以下でデプロイできます。
 
