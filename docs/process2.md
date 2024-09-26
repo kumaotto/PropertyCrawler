@@ -11,9 +11,9 @@
 手順:
 
 1. Slack APIにログイン: [Slack API](https://api.slack.com/)にアクセスし、アプリを選択します。
-![Slack API](docs/images/slack-api-top.png)
+![Slack API](images/slack-api-top.png)
 2. OAuth & Permissionsページ: 左側のメニューから「OAuth & Permissions」を選択します。
-![OAuth & Permissions](docs/images/oauth-permissions.png)
+![OAuth & Permissions](images/oauth-permissions.png)
 3. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。
 
 - chat:write (メッセージの投稿)
@@ -27,11 +27,11 @@
 - reactions:read
 
 4. OAuthトークンの再生成: スコープを追加した後、「OAuth Tokens for Your Workspace」セクションで「Reinstall App」ボタンをクリックして新しいトークンを生成します。
-![oauth-token](docs/images/oauth-tokens.png)
+![oauth-token](images/oauth-tokens.png)
 
 5. Incoming Webhooksからwebhook URLを払い出す
 ※後ほどURLは使うので控えておく
-![webhooks](docs/images/webhooks.png)
+![webhooks](images/webhooks.png)
 
 6. 通知したいSlackのチャンネルをLambdaの環境変数に設定する
 `cdk/crawling_batch_stack.py` の `TARGET_SLACK_CHANNEL` に値を入れる。

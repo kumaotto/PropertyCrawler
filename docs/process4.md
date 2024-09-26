@@ -4,11 +4,11 @@
 複数のルールを設定することで、複数URLをクローリングすることができます。
 
 1. スケジュールを作成
-![schedule-create](docs/images/schedule-create.png)
+![schedule-create](images/schedule-create.png)
 2. cronを設定する
 フレックスタイムウィンドウは好きな値を設定してください。
-![schedule-create](docs/images/schedule-create2.png)
-![schedule-create](docs/images/schedule-create3.png)
-![schedule-create](docs/images/schedule-create4.png)
-![schedule-create](docs/images/schedule-create5.png)
-![schedule-create](docs/images/schedule-create6.png)
+![schedule-create](images/schedule-create2.png)
+![schedule-create](images/schedule-create3.png)
+![schedule-create](images/schedule-create4.png)
+![schedule-create](images/schedule-create5.png)
+![schedule-create](images/schedule-create6.png)

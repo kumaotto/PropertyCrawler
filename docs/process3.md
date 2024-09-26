@@ -25,7 +25,7 @@
 タイプ： 文字列
 データ型： text
 値： IDは以下で確認できます
-![spreadsheet-id](docs/images/spreadsheet-id.png)
+![spreadsheet-id](images/spreadsheet-id.png)
 
 - GCのクレデンシャル
 パラメータ名： /crawling-houses/google/credentials
