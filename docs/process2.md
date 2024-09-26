@@ -1,11 +1,5 @@
 # Slackの設定
 
-1. **`.env.example`をコピーする:**
-
-```shell
-   cp .env.example .env
-```
-
 1. **Slackでトークンを作成する**
 
 手順:
