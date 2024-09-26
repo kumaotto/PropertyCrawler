@@ -12,3 +12,9 @@
 ![schedule-create](images/schedule-create4.png)
 ![schedule-create](images/schedule-create5.png)
 ![schedule-create](images/schedule-create6.png)
+
+### ペイロード
+
+```json
+{ "url": "https://suumo.jp/jj/chintai/ichiran/xxx" }
+```
