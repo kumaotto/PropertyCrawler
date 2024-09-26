@@ -6,13 +6,13 @@
 
 ## Slackを使用する場合
 
-- SlackのWebhook URL
+・SlackのWebhook URL
 パラメータ名： `/crawling-houses/slack/webhook/url`
 タイプ： 文字列
 データ型： text
 値： Slack Webhook URLをペースト
 
-- Slack Token
+・Slack Token
 パラメータ名： `/crawling-houses/slack/token`
 タイプ： 文字列
 データ型： text
@@ -20,14 +20,14 @@
 
 ## スプレッドシートを使用する場合
 
-- スプレッドシートID
+・スプレッドシートID
 パラメータ名： `/crawling-houses/spreadsheet/id`
 タイプ： 文字列
 データ型： text
 値： IDは以下で確認できます
 ![spreadsheet-id](images/spreadsheet-id.png)
 
-- GCのクレデンシャル
+・GCのクレデンシャル
 パラメータ名： /crawling-houses/google/credentials
 タイプ： 文字列
 データ型： text
