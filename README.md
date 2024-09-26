@@ -11,6 +11,7 @@
 
 このプロジェクトはDevContainerを使用しています。
 VSCodeの拡張機能にDevContainerを入れ、docker上で起動すると、cdkをローカルに入れる必要もなく楽です。
+またSpreadSheetのテンプレートは `docs/` 配下にxlsxファイルで置いてあります。
 
 ※ aws-cliで設定されているアカウント、リージョンにデプロイされます
 
