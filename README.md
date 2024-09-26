@@ -21,6 +21,8 @@ docs配下に格納されている `process1` 〜 `process3` までをご参照�
 コンテナ起動時、初回だけ
 
 ```shell
+cdk bootstrap
+
 poetry shell
 ```
 
