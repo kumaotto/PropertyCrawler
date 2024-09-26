@@ -1,14 +1,11 @@
 # Slackの設定
-
-1. **Slackでトークンを作成する**
-
 手順:
 
 1. Slack APIにログイン: [Slack API](https://api.slack.com/)にアクセスし、アプリを選択します。
 ![Slack API](images/slack-api-top.png)
-2. OAuth & Permissionsページ: 左側のメニューから「OAuth & Permissions」を選択します。
+1. OAuth & Permissionsページ: 左側のメニューから「OAuth & Permissions」を選択します。
 ![OAuth & Permissions](images/oauth-permissions.png)
-3. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。
+1. Bot Token Scopes: 「Bot Token Scopes」セクションで、アプリに必要なスコープを追加します。このプロジェクトで必要な権限は以下です。
 
 - chat:write (メッセージの投稿)
 - channels:read (チャンネル情報の読み取り)
