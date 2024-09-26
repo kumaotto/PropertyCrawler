@@ -6,7 +6,7 @@
 
 ## Slackを使用する場合
 
-・SlackのWebhook URL
+**・SlackのWebhook URL**
 
 パラメータ名： `/crawling-houses/slack/webhook/url`
 
@@ -16,7 +16,7 @@
 
 値： Slack Webhook URLをペースト
 
-・Slack Token
+**・Slack Token**
 
 パラメータ名： `/crawling-houses/slack/token`
 
@@ -28,7 +28,7 @@
 
 ## スプレッドシートを使用する場合
 
-・スプレッドシートID
+**・スプレッドシートID**
 
 パラメータ名： `/crawling-houses/spreadsheet/id`
 
@@ -39,7 +39,7 @@
 値： IDは以下で確認できます
 ![spreadsheet-id](images/spreadsheet-id.png)
 
-・GCのクレデンシャル
+**・GCのクレデンシャル**
 
 パラメータ名： /crawling-houses/google/credentials
 
