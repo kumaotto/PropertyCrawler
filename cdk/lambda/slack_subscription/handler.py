@@ -14,6 +14,7 @@ client = WebClient(token=slack_token)
 sheet_client = setup_google_sheets_client()
 
 SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
+SPREADSHEET_USE_FLAG = os.environ["IS_USE_SPREADSHEET"]
 SHEET_NAME = "crawling"
 
 logger = Logger()
@@ -40,13 +41,15 @@ def lambda_handler(event, context):
             if reaction == "+1" and event_type == "reaction_added":
                 logger.info("👍リアクションが追加されました")
                 add_pins(channel_id, timestamp)
-                update_row_color(channel_id, timestamp, hightlight=True)
+                if SPREADSHEET_USE_FLAG == "true":
+                    update_row_color(channel_id, timestamp, hightlight=True)
 
             # 👍リアクションが削除された場合
             if reaction == "+1" and event_type == "reaction_removed":
                 logger.info("👍リアクションが削除されました")
                 remove_pins(channel_id, timestamp)
-                update_row_color(channel_id, timestamp, hightlight=False)
+                if SPREADSHEET_USE_FLAG == "true":
+                    update_row_color(channel_id, timestamp, hightlight=False)
 
     except Exception:
         logger.exception("Error processing event")
@@ -74,9 +77,7 @@ def remove_pins(channel_id: str, timestamp: str):
 def update_row_color(channel_id: str, timestamp: str, hightlight: bool = True):
     try:
         # 物件URLをメッセージから抽出
-        response = client.conversations_history(
-            channel=channel_id, latest=timestamp, inclusive=True, limit=1
-        )
+        response = client.conversations_history(channel=channel_id, latest=timestamp, inclusive=True, limit=1)
         message_text = response["messages"][0]["text"]
         property_URL = extract_property_id(message_text)
 

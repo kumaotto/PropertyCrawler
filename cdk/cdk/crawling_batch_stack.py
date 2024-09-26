@@ -12,7 +12,7 @@ from constructs import Construct
 
 
 class CrawlingBatchStack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, is_use_spreadsheet: bool, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         """
@@ -48,9 +48,11 @@ class CrawlingBatchStack(Stack):
         slack_webhook_url = ssm.StringParameter.from_string_parameter_attributes(
             self, "SlackWebhookURL", parameter_name="/crawling-houses/slack/webhook/url"
         )
-        spreadsheet_id = ssm.StringParameter.from_string_parameter_attributes(
-            self, "SpreadsheetID", parameter_name="/crawling-houses/spreadsheet/id"
-        )
+
+        if is_use_spreadsheet:
+            spreadsheet_id = ssm.StringParameter.from_string_parameter_attributes(
+                self, "SpreadsheetID", parameter_name="/crawling-houses/spreadsheet/id"
+            )
 
         crawling_lambda = _lambda.Function(
             self,
@@ -63,10 +65,11 @@ class CrawlingBatchStack(Stack):
             layers=[crawling_layer, common_layer],
             environment={
                 "SLACK_WEBHOOK_URL": slack_webhook_url.string_value,
-                "SPREADSHEET_ID": spreadsheet_id.string_value,
+                "SPREADSHEET_ID": spreadsheet_id.string_value if is_use_spreadsheet else "",
                 "TARGET_SLACK_CHANNEL": "#reaction-test",  # TODO #の後ろにSlackのチャンネル名を記載してください
                 "TARGET_SHEET_NAME": "Crawler Property Results",
                 "DYNAMODB_TABLE_NAME": table.table_name,
+                "IS_USE_SPREADSHEET": str(is_use_spreadsheet),  # NOTE trueにするとスプレッドシートに書き込みます
             },
         )
 
@@ -78,8 +81,6 @@ class CrawlingBatchStack(Stack):
         crawling_lambda.add_to_role_policy(
             iam.PolicyStatement(
                 actions=["ssm:GetParameter"],
-                resources=[
-                    f"arn:aws:ssm:{self.region}:{self.account}:parameter/crawling-houses/google/credentials"
-                ],
+                resources=[f"arn:aws:ssm:{self.region}:{self.account}:parameter/crawling-houses/google/credentials"],
             )
         )

@@ -11,7 +11,7 @@ from constructs import Construct
 
 
 class SlackSubscriptionStack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, is_use_spreadsheet: bool, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         """
@@ -21,9 +21,11 @@ class SlackSubscriptionStack(Stack):
         slack_token = ssm.StringParameter.from_string_parameter_attributes(
             self, "SlackToken", parameter_name="/crawling-houses/slack/token"
         )
-        spreadsheet_id = ssm.StringParameter.from_string_parameter_attributes(
-            self, "SpreadsheetId", parameter_name="/crawling-houses/spreadsheet/id"
-        )
+
+        if is_use_spreadsheet:
+            spreadsheet_id = ssm.StringParameter.from_string_parameter_attributes(
+                self, "SpreadsheetId", parameter_name="/crawling-houses/spreadsheet/id"
+            )
 
         # Lambda Layer
         module_layer = lambda_alpha.PythonLayerVersion(
@@ -58,7 +60,7 @@ class SlackSubscriptionStack(Stack):
             layers=[module_layer, common_layer, lambda_power_tool_layer],
             environment={
                 "SLACK_BOT_TOKEN": slack_token.string_value,
-                "SPREADSHEET_ID": spreadsheet_id.string_value,
+                "SPREADSHEET_ID": spreadsheet_id.string_value if is_use_spreadsheet else "",
             },
         )
 
@@ -84,8 +86,6 @@ class SlackSubscriptionStack(Stack):
         slack_lambda.add_to_role_policy(
             iam.PolicyStatement(
                 actions=["ssm:GetParameter"],
-                resources=[
-                    f"arn:aws:ssm:{self.region}:{self.account}:parameter/crawling-houses/google/credentials"
-                ],
+                resources=[f"arn:aws:ssm:{self.region}:{self.account}:parameter/crawling-houses/google/credentials"],
             )
         )

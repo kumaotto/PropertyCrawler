@@ -8,5 +8,6 @@
     "python.analysis.extraPaths": [
         "${workspaceFolder}/cdk/lambda/layer/common_layer",
         "${workspaceFolder}/cdk/lambda/crawling_batch",
+        "${workspaceFolder}/cdk",
     ]
 }
