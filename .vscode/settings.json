@@ -3,7 +3,10 @@
         "--max-line-length",
         "150"
     ],
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "python.analysis.extraPaths": [
-        "./cdk/lambda/layer/common_layer/python"
+        "${workspaceFolder}/cdk/lambda/layer/common_layer",
+        "${workspaceFolder}/cdk/lambda/crawling_batch",
     ]
 }

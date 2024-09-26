@@ -5,21 +5,20 @@ from scraper import scrape_properties
 
 
 def lambda_handler(event, context):
-
-    initial_url = event.get('url')
+    initial_url = event.get("url")
     properties = scrape_properties(initial_url)
     new_properties = []
 
     if not properties:
         print("No properties found.")
-        return {'statusCode': 200, 'body': 'No properties to process'}
+        return {"statusCode": 200, "body": "No properties to process"}
 
-    print('properties:', properties)
+    print("properties:", properties)
 
     for prop in properties:
-        if not check_cache(prop.get('url')):
+        if not check_cache(prop.get("url")):
             new_properties.append(prop)
-            update_cache(prop.get('url'))
+            update_cache(prop.get("url"))
 
     if new_properties:
         send_to_sheets(new_properties)
@@ -27,4 +26,4 @@ def lambda_handler(event, context):
     else:
         print("No new properties to send.")
 
-    return {'statusCode': 200, 'body': 'Execution complete'}
+    return {"statusCode": 200, "body": "Execution complete"}

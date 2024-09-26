@@ -1,4 +1,3 @@
-import json
 from aws_cdk import (
     Duration,
     Stack,
@@ -6,9 +5,8 @@ from aws_cdk import (
     aws_ssm as ssm,
     aws_iam as iam,
     aws_dynamodb as dynamodb,
-    aws_events as events,
-    aws_events_targets as targets,
     RemovalPolicy,
+    aws_lambda_python_alpha as lambda_alpha,
 )
 from constructs import Construct
 
@@ -31,17 +29,17 @@ class CrawlingBatchStack(Stack):
         Lambda
         """
         # Lambda Layer
-        crawling_layer = _lambda.LayerVersion(
+        crawling_layer = lambda_alpha.PythonLayerVersion(
             self,
             "CrawlingModuleLayer",
-            code=_lambda.Code.from_asset("./lambda/layer/crawling_layer"),
+            entry="lambda/layer/crawling_layer",
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
             description="Crawling Module Layer",
         )
-        common_layer = _lambda.LayerVersion(
+        common_layer = lambda_alpha.PythonLayerVersion(
             self,
             "SlackCommonLayer",
-            code=_lambda.Code.from_asset("./lambda/layer/common_layer"),
+            entry="lambda/layer/common_layer",
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
             description="A layer that contains the common functions.",
         )
@@ -58,6 +56,7 @@ class CrawlingBatchStack(Stack):
             self,
             "CrawlingHandler",
             runtime=_lambda.Runtime.PYTHON_3_12,
+            memory_size=256,
             handler="handler.lambda_handler",
             code=_lambda.Code.from_asset("./lambda/crawling_batch"),
             timeout=Duration.seconds(200),
