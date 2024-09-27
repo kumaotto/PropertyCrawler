@@ -26,6 +26,8 @@ cdk bootstrap
 poetry shell
 ```
 
+デプロイ
+
 ```shell
 cd cdk/
 cdk deploy --all
