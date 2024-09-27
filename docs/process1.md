@@ -1,7 +1,9 @@
 # SpreadSheet側の設定
+
 Slackだけでいい場合は飛ばしてください。
 
 ## cdk.jsonのフラグをTrueにする
+
 `cdk/cdk.json` の `isUseSpreadSheet` を `true` に変更してください。
 
 ## API を有効にする
