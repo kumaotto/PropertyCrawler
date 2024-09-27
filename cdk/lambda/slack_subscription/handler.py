@@ -10,9 +10,6 @@ from utils import extract_property_id
 slack_token = os.environ["SLACK_BOT_TOKEN"]
 client = WebClient(token=slack_token)
 
-# スプレッドシート設定
-sheet_client = setup_google_sheets_client()
-
 SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 SPREADSHEET_USE_FLAG = os.environ["IS_USE_SPREADSHEET"]
 SHEET_NAME = "crawling"
@@ -24,11 +21,19 @@ logger = Logger()
 def lambda_handler(event, context):
     try:
         body = json.loads(event["body"])
-        logger.info("body:", body)
+        logger.info(f"body: {body}")
 
         # slackのチャレンジリクエスト用
-        if "challenge" in body:
-            return {"statusCode": 200, "body": body["challenge"]}
+        if body.get("type") == "url_verification":
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"challenge": body["challenge"]}),
+            }
+
+        # リトライ時の処理
+        if event.get("headers").get("X-Slack-Retry-Num"):
+            return {"statusCode": 200, "body": "Retry"}
 
         if "event" in body:
             event_data = body["event"]
@@ -54,10 +59,6 @@ def lambda_handler(event, context):
     except Exception:
         logger.exception("Error processing event")
 
-    finally:
-        # 常に200 OKを返すことで、Slackによるリトライを防止
-        return {"statusCode": 200, "body": ""}
-
 
 def add_pins(channel_id: str, timestamp: str):
     try:
@@ -75,6 +76,9 @@ def remove_pins(channel_id: str, timestamp: str):
 
 
 def update_row_color(channel_id: str, timestamp: str, hightlight: bool = True):
+    # スプレッドシート設定
+    sheet_client = setup_google_sheets_client()
+
     try:
         # 物件URLをメッセージから抽出
         response = client.conversations_history(channel=channel_id, latest=timestamp, inclusive=True, limit=1)

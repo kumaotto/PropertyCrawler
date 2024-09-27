@@ -61,6 +61,7 @@ class SlackSubscriptionStack(Stack):
             environment={
                 "SLACK_BOT_TOKEN": slack_token.string_value,
                 "SPREADSHEET_ID": spreadsheet_id.string_value if is_use_spreadsheet else "",
+                "IS_USE_SPREADSHEET": str(is_use_spreadsheet),
             },
         )
 
